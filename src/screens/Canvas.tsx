@@ -28,8 +28,10 @@ const Canvas = () => {
         // const subscription = accelerometer.subscribe(({ x, y, z, timestamp }) =>
         //     console.log({ x, y, z, timestamp })
         // );
+
+        // ** IOS는 0에서 시작함 , AOS는 디폴트가 9.5 정도값이 계속 구독됨 ** //
         const subscription = accelerometer
-            .pipe(map(({ x, y, z }) => x + y + z), filter(speed => speed > 15))
+            .pipe(map(({ x, y, z }) => x + y + z), filter(speed => speed > 0))
             .subscribe(
                 speed => console.log(`You moved your phone with ${speed}`),
                 error => {
