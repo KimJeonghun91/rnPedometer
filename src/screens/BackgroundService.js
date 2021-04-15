@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, ScrollView, SafeAreaView, Platform, Alert, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, ScrollView, SafeAreaView, Platform, Alert, Text,TouchableOpacity } from "react-native";
 import BackgroundService from 'react-native-background-actions';
 import Loader from "../components/Loader"
 import { accelerometer, gyroscope, setUpdateIntervalForType, SensorTypes } from "react-native-sensors";
@@ -22,26 +22,25 @@ class Canvas extends React.Component {
         };
     }
 
-    componentDidMount() {
-        this._startWalk()
-    }
+    // componentDidMount() {
+    //     this._startWalk()
+    // }
 
-    async componentWillUnmount() {
-        this._stopWalk()
-    }
+    // async componentWillUnmount() {
+    //     await BackgroundService.stop();
+    //     if (this.state.subscription !== null)
+    //         this.state.subscription.unsubscribe();
+    // }
 
     _stopWalk = async () => {
         await BackgroundService.stop();
         this.setState({ isSubState: false })
-        if (this.state.subscription !== null) {
-            this.state.subscription.unsubscribe();
-            this.state.subscription = null
-        }
+        // if (this.state.subscription !== null)
+        //     this.state.subscription.unsubscribe();
     }
 
 
     _startWalk = async () => {
-        console.log("_startWalk : BackgroundService.isRunning() : " + BackgroundService.isRunning())
         if (!BackgroundService.isRunning()) {
             // activateKeepAwake();
             await BackgroundService.start(this.veryIntensiveTask, {
@@ -63,8 +62,7 @@ class Canvas extends React.Component {
         const { delay } = taskDataArguments;
 
         await new Promise(async (resolve) => {
-            console.log("veryIntensiveTask : BackgroundService.isRunning() : " + BackgroundService.isRunning())
-            console.log("veryIntensiveTask : this.state.subscription : " + this.state.subscription)
+            console.log("BackgroundService.isRunning() : " + BackgroundService.isRunning())
 
             if (this.state.subscription === null) {
                 this.state.subscription = accelerometer
@@ -84,7 +82,10 @@ class Canvas extends React.Component {
                                 BackgroundService.updateNotification({ taskDesc: `step : ${this.state.mStep}` });
 
                             } else {
-                                this._stopWalk()
+                                BackgroundService.stop();
+                                this.setState({ isSubState: false })
+                                if (this.state.subscription !== null)
+                                    this.state.subscription.unsubscribe();
                             }
                         },
                         error => {
@@ -118,7 +119,7 @@ class Canvas extends React.Component {
                                 onPress={() => {
                                     if (isSubState) {
                                         this._stopWalk()
-                                    } else {
+                                    }else{
                                         this._startWalk()
                                     }
                                 }}>
