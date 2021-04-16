@@ -42,6 +42,12 @@ class Canvas extends React.Component {
 
     _startWalk = async () => {
         console.log("_startWalk : BackgroundService.isRunning() : " + BackgroundService.isRunning())
+
+        // iOS only Listen for the iOS-only expiration handler that allows you to 'clean up' shortly before the app’s remaining background time reaches
+        BackgroundService.on('expiration', () => {
+            console.log('I am being closed :(');
+        });
+
         if (!BackgroundService.isRunning()) {
             // activateKeepAwake();
             await BackgroundService.start(this.veryIntensiveTask, {
